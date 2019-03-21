@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,28 +48,97 @@ public class ColumnSortMatrix {
         }
     }
 
+    /** Returns the column of the matrix at a specific location
+     * @param col           The column number
+     * @return              An array containing all the integers in the column
+     */
+    private int[] getColumn(int col) {
+        assert col < this.cols;
+        int[] column = new int[this.rows];
+        for (int i = 0; i < this.rows; i++) {
+            column[i] = this.matrix[i][col];
+        }
+        return column;
+    }
+
+    /** Replaces a column in the matrix with an input array
+     * @param column            The array to replace the column
+     * @param col               The column number
+     */
+    private void replaceColumn(int[] column, int col) {
+        assert column.length == this.rows;
+        for (int i = 0; i < this.rows; i++) {
+            this.matrix[i][col] = column[i];
+        }
+    }
+
+    /** Sorts an individual column in the matrix
+     * @param col               The column number
+     */
+    private void sortColumn(int col) {
+        int[] column = this.getColumn(col);
+        Quicksort.sort(column, 0, column.length - 1);
+        this.replaceColumn(column, col);
+    }
+
+    /**
+     * Sorts all the column in the matrix
+     */
+    public void sortAllColumns() {
+        for (int col = 0; col < this.cols; col++) {
+            this.sortColumn(col);
+        }
+    }
+
+    /** Returns a new transposed matrix
+     * @return              A transposed matrix
+     */
+    public ColumnSortMatrix transpose() {
+        ColumnSortMatrix transposed = new ColumnSortMatrix(this.cols, this.rows);
+        for (int i = 0; i < transposed.rows; i++) {
+            transposed.matrix[i] = this.getColumn(i).clone();
+        }
+        return transposed;
+    }
+
+    /** Returns a list of the matrix entries in column-major row.
+     * @return          A list containing the values of the matrix in column-major order.
+     */
+    public List<Integer> toList() {
+        List<Integer> integerList = new ArrayList<>();
+        int[] column;
+        for (int col = 0; col < this.cols; col++) {
+            column = this.getColumn(col);
+            for (int i = 0; i < column.length; i++) {
+                integerList.add(column[i]);
+            }
+        }
+        return integerList;
+    }
+
+    /** Returns a list of the matrix entries in row-major order
+     * @return          A list containing the values of the matrix in row-major order
+     */
+    public List<Integer> toListRowMajor() {
+        List<Integer> integerList = new ArrayList<>();
+        for (int i = 0; i < this.getRows(); i++) {
+            for (int num : this.matrix[i]) {
+                integerList.add(num);
+            }
+        }
+        return integerList;
+    }
+
     // Getters and Setters
     public int getRows() {
         return rows;
-    }
-
-    public void setRows(int rows) {
-        this.rows = rows;
     }
 
     public int getCols() {
         return cols;
     }
 
-    public void setCols(int cols) {
-        this.cols = cols;
-    }
-
     public int[][] getMatrix() {
         return matrix;
-    }
-
-    public void setMatrix(int[][] matrix) {
-        this.matrix = matrix;
     }
 }
